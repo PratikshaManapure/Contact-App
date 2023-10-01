@@ -1,0 +1,18 @@
+.contact-card{
+    /* #ffccdd */
+    background-color: white;
+    width: 350px;
+    padding: 5px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 2px 2px rgb(191, 190, 190);
+    font-family: roboto;
+}
+
+.contact-name{
+    font-size: 18px;
+}
+
+.m-5{
+    margin: 5px;
+}

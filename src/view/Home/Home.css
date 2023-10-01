@@ -1,0 +1,47 @@
+body{
+    background-color: #ffe6ee;
+    
+}
+
+.app-heading{
+    font-family: roboto;
+    color: #ff3377;
+    text-align: center;
+    font-size: 40px;
+}
+
+
+
+.app-body{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.app-subheading{
+    font-family: roboto;
+    text-align: center;
+}
+
+.input-field{
+    display: block;
+    /* width: 250px; */
+    border-radius: 5px;
+    border: 1px solid #ff3377;
+    font-size: 20px;
+    box-shadow: 0 0 2px 1px rgb(191, 190, 190);
+    padding: 10px;
+    margin: 30px;
+}
+
+.add-btn{
+    display: block;
+    margin: auto;
+    padding: 10px;
+    font-size: 20px;
+    border: none;
+    border-radius: 15px;
+    color: white;
+    background-color: #ff6699;
+    cursor: pointer;
+}
