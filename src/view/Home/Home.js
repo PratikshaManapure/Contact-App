@@ -1,4 +1,4 @@
-import React ,{ useState } from 'react'
+import React ,{ useEffect, useState } from 'react'
 import './Home.css'
 import ContactCard from '../../components/ContactCard/ContactCard'
 import showToast from 'crunchy-toast';
@@ -19,15 +19,33 @@ export default function Home(){
     const [name, setName] = useState('');
     const [mobile, setMobile] = useState('');
     const [email, setEmail] = useState('');
+    const [editIndex, setEditIndex] = useState('-1');
+    const [isEditMode, setIsEditMode] = useState(false);
 
 const addContact = () => {
+
+    if(!name){
+        showToast('Name is required...', 'alert', 3000);
+        return;
+    }
+    if(!mobile){
+        showToast('Mobile is required...', 'alert', 3000);
+        return;
+    }
+    if(!email){
+        showToast('Email is required...', 'alert', 3000);
+        return;
+    }
+
     const obj = {
         name : name,
         mobile : mobile,
         email : email
     }
 
-    setContacts([...contacts, obj]);
+    const newContacts = [...contacts,obj]
+    setContacts(newContacts);
+    saveToLocalStorage(newContacts);
 
     showToast('Contact added Successfully...', 'success', 3000);
 
@@ -35,8 +53,70 @@ const addContact = () => {
     setMobile('')
     setEmail('')
 
+
 };
-    
+
+const deleteContact = (mobileNumber) => {
+    let indexToBeDeleted = -1;
+    contacts.forEach((contactDetail, index) => {
+        if(contactDetail.mobile == mobileNumber){
+            indexToBeDeleted = index;
+        }
+    })
+
+    contacts.splice(indexToBeDeleted, 1);
+
+    saveToLocalStorage(contacts);
+
+    setContacts([...contacts])
+
+    showToast("Contact deleted Successfully..",'success','3000')
+};
+
+const saveToLocalStorage = (contactsData)=> {
+    localStorage.setItem('contacts', JSON.stringify(contactsData));
+}
+   
+const loadFromLocalStorage = () => {
+    const contactsData = JSON.parse(localStorage.getItem('contacts'));
+    if(contactsData){
+        setContacts(contactsData);
+    }
+}
+
+const enableEditMode = (index) => {
+    const contactsData = contacts[index];
+    setName(contactsData.name);
+    setMobile(contactsData.mobile);
+    setEmail(contactsData.email);
+    setEditIndex(index);
+    setIsEditMode(true);
+}
+
+const editContact = () =>{
+    const obj = {
+        name :name,
+        mobile : mobile,
+        email : email
+    }
+
+    contacts[editIndex] = obj;
+    setContacts([...contacts]);
+    saveToLocalStorage(contacts);
+
+    showToast('Contact Edited Successfully','success',3000);
+
+    setName('');
+    setEmail('');
+    setMobile('');
+
+    setIsEditMode(false);
+}
+
+useEffect(() => {
+    loadFromLocalStorage();
+},[])
+
     return(
         <div>
             <h1 className='app-heading'>📞 Contact App</h1>
@@ -49,13 +129,18 @@ const addContact = () => {
                                 <ContactCard key={index}
                                 name={contact.name}
                                 mobile={contact.mobile}
-                                email={contact.email}/>
+                                email={contact.email}
+                                deleteContact={deleteContact}
+                                enableEditMode={enableEditMode}
+                                index={index}/>
                             )
                         })
                     }
                 </div>
                 <div className='add-contacts-container'>
-                    <h2 className='app-subheading'>Add Contacts</h2>
+                    <h2 className='app-subheading'>
+                        {isEditMode ? 'Edit Contact' : 'Add Contact'}
+                    </h2>
                     <div>
                         <form>
                             <input
@@ -91,7 +176,11 @@ const addContact = () => {
                             <button 
                             className='add-btn' 
                             type='button' 
-                            onClick={addContact}>Add Contact</button>
+                            onClick={() => {
+                                isEditMode ? editContact() : addContact();
+                            }}>
+                                {isEditMode ? 'Edit Contact' : 'Add Contact'}
+                            </button>
                         </form>
                     </div>
                 </div>
